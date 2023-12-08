@@ -59,37 +59,37 @@ if (isset($_SESSION["user_id"])) {
             handleProductSelection(selectedOption, 'cart');
         });
         function handleProductSelection(selectedOption, prefix) {
-            var table = $('#productTable');
+        var table = $('#productTable');
 
-            // Show all rows
-            table.find('tbody tr').show();
+        // Show all rows
+        table.find('tbody tr').show();
 
-            if (selectedOption !== "") {
-                // Hide rows where the product ID does not match the selected option
-                table.find('tbody tr').filter(function () {
-                    return $(this).find('td:first-child').text() !== selectedOption;
-                }).hide();
+        if (selectedOption !== "Select Product ID") {
+            // Hide rows where the product ID does not match the selected option
+            table.find('tbody tr').filter(function () {
+                return $(this).find('td:first-child').text() !== selectedOption;
+            }).hide();
 
-                // Find the selected row
-                var selectedRow = table.find('tbody tr').filter(function () {
-                    return $(this).find('td:first-child').text() === selectedOption;
-                });
+            // Find the selected row
+            var selectedRow = table.find('tbody tr').filter(function () {
+                return $(this).find('td:first-child').text() === selectedOption;
+            });
 
-                // Populate input boxes with corresponding values from the selected row
-                var productName = selectedRow.find('td:eq(1)').text();
-                var unitPrice = selectedRow.find('td:eq(2)').text();
-                var stockQuantity = selectedRow.find('td:eq(3)').text();
+            // Populate input boxes with corresponding values from the selected row
+            var productName = selectedRow.find('td:eq(1)').text();
+            var unitPrice = selectedRow.find('td:eq(2)').text();
+            var stockQuantity = selectedRow.find('td:eq(3)').text();
 
-                // Set values in the input boxes with the specified prefix
-                $('#' + prefix + 'ProductName').val(productName);
-                $('#' + prefix + 'UnitPrice').val(unitPrice);
-                $('#' + prefix + 'StockQuantity').val(stockQuantity);
-            } else {
-                // Clear input boxes if the selected option is empty
-                $('#' + prefix + 'ProductName, #' + prefix + 'UnitPrice, #' + prefix + 'StockQuantity').val('');
-            }
+            // Set values in the input boxes with the specified prefix
+            $('#' + prefix + 'ProductName').val(productName);
+            $('#' + prefix + 'UnitPrice').val(unitPrice);
+            $('#' + prefix + 'StockQuantity').val(stockQuantity);
+        } else {
+            // Clear input boxes if the selected option is "Select Product ID"
+            $('#' + prefix + 'ProductName, #' + prefix + 'UnitPrice, #' + prefix + 'StockQuantity').val('');
         }
-    });
+    }
+});
 </script>
 <?php if (isset($_SESSION['user_id'])): ?>
 <div class="container" >
@@ -104,15 +104,17 @@ if (isset($_SESSION["user_id"])) {
         <form id="productForm">
             <div class="mb-3">
                 <select id="productProductId" name="productProductId" class="form-select" aria-label="Product ID">
-                    <?php
+                    <?php   
                     // Render product options using SelectProductIDHandler
                     $productIDs = $selectProductIDHandler->getProductIDs();
 
                     // Loop through product IDs and generate options
                     foreach ($productIDs as $productID) {
+                        // Check if the current productID is the desired default value (e.g., the first option)
                         echo "<option value=\"$productID\">$productID</option>";
                     }
                     ?>
+                    
                 </select>
             </div>
 

@@ -16,7 +16,8 @@ class SelectProductIDHandler extends DatabaseHandler
     {
         // Array to store product IDs
         $productIDs = [];
-
+        // Add a default "Select Product ID" option
+        $productIDs[] = "Select Product ID";
         // Query to select product IDs from the database
         $result = $this->con->query("SELECT product_id FROM products_table");
 
