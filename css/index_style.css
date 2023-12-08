@@ -1,0 +1,68 @@
+body {
+padding: 13px;
+background-color: #75acd2;
+color: #0a2e48;
+}
+html {
+scroll-behavior: smooth; /* Add this line for smooth scrolling */
+}
+::-webkit-scrollbar {
+width: 12px; 
+}
+::-webkit-scrollbar-thumb {
+background: #1669a2;
+border-radius: 86px;
+}
+.container {
+min-width: 75vh;
+}
+.col {
+height: 96vh;
+padding: 0;
+}
+#left-container{
+max-width: 20%;
+margin-right: 10px;
+background-color: #fff;
+border-radius: 8px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+#right-container{
+max-width: 80%;
+background-color: #fff;
+border-radius: 8px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+#dropdown {
+color: #fff;
+font-weight: bolder;
+background-color: #0a2e48;
+}
+.dropdown-menu a.dropdown-item:hover {
+background-color: #1669a2; /* Change the background color on hover */
+color: #fff; /* Change the text color on hover */
+}
+#logout:hover {
+background-color: #dc3545;
+color: #fff; 
+}
+#overview {
+font-size: 50px;
+color: #0a2e48;
+font-weight: bolder;
+
+}
+
+#overview:hover {
+color: #fff;
+}
+
+#header {
+background-color: #0a2e48;
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
+color: #fff;
+}
+.overflow-y-auto.p-2.px-3 {
+border: solid;
+}

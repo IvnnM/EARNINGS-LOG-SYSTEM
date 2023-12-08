@@ -1,0 +1,119 @@
+body {
+  padding: 13px;
+
+  background-color: #75acd2;
+  /*background-color: #ffdcda;
+  color: #2f2a24;*/
+  color: #0a2e48;
+
+}
+::-webkit-scrollbar {
+  width: 12px; 
+}
+::-webkit-scrollbar-thumb {
+  background: #1669a2;
+  border-radius: 86px;
+}
+
+.container {
+  min-width: 75vh;
+}
+
+.col {
+  /*border: solid red;*/
+  height: 96vh;
+  padding: 0;
+}
+
+#left-container{
+  max-width: 60%;
+  margin-right: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+#right-container{
+  max-width: 40%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+ .btn {
+  padding: 10px;
+  color: #0a2e48;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+button, #selectedDate {
+  padding: 7px;
+  color: #0a2e48;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  
+}
+#selectedDate {
+  background-color: #75acd2;
+  color: #0a2e48;
+}
+#addStockBtn {
+  padding: 7px;
+  color: #0a2e48;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+#soldProductList, #productList {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+#reports {
+  background-color: #0a2e48;
+  color: #fff;
+  font-weight: bold;
+}
+#dropdown {
+  color: #fff;
+  font-weight: bolder;
+  background-color: #0a2e48;
+  
+}
+  .dropdown-menu a.dropdown-item:hover {
+    background-color: #1669a2; /* Change the background color on hover */
+    color: #fff; /* Change the text color on hover */
+}
+#logout:hover {
+    background-color: #dc3545;
+    color: #fff; 
+}
+#submitCartBtn{
+  background-color: #1669a2 !important;
+  color: #fff;
+}
+.btn:hover, .btn.update:hover, .btn.delete:hover, #addStockBtn:hover{
+  transition: background-color 0.3s, color 0.3s;
+  background-color: #1669a2;
+  color: #fff;
+}
+#submitCartBtn:hover {
+  transition: background-color 0.3s, color 0.3s;
+  background-color: #0a2e48 !important;
+  color: #fff;
+}
+#reports:hover {
+  transition: background-color 0.3s, color 0.3s;
+  background-color: #1669a2;
+  color: #fff;
+}
+.form-control, select{
+  color: black;
+}
+label{
+
+  color: black;
+}
