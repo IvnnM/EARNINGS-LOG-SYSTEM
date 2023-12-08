@@ -1,13 +1,21 @@
 <?php
-$host = "localhost";
-$dbname = "db_sarisaristore";
-$username = "root";
-$password = "";
 
-$con = new mysqli($host, $username, $password, $dbname);
+// connection.php
+class DatabaseHandler {
+    private $host = 'localhost';
+    private $username = 'root';
+    private $password = '';
+    private $database = 'db_sarisaristore';
 
-if ($con->connect_error) {
-    die("Connection failed: " . $con->connect_error);
+    public $con;
+
+    public function __construct() {
+        $this->con = new mysqli($this->host, $this->username, $this->password, $this->database);
+
+        if ($this->con->connect_error) {
+            die("Connection failed: " . $this->con->connect_error);
+        }
+    }
 }
 
 ?>

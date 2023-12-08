@@ -1,30 +1,8 @@
 <?php
-include '../connection.php';
-
-class DatabaseHandler
-{
-    protected $con;
-
-    public function __construct($db)
-    {
-        $this->con = $db;
-
-        // Check connection
-        if ($this->con->connect_error) {
-            die("Connection failed: " . $this->con->connect_error);
-        }
-    }
-
-    public function closeConnection()
-    {
-        $this->con->close();
-    }
-}
+include_once __DIR__ . '/../connection.php';
 
 class CartHandler extends DatabaseHandler
 {
-    // Inheritance: CartHandler inherits from DatabaseHandler
-
     // Abstraction: Method to add sold items to the cart
     public function addSoldItems($data)
     {
@@ -79,9 +57,19 @@ class CartHandler extends DatabaseHandler
             return "No item found in cart";
         }
     }
+    
+    // Method to close the database connection
+    public function closeConnection()
+    {
+        $this->con->close();
+    }
 }
 
+// Start the session
+session_start();
+
 // Instantiate CartHandler
+global $con;
 $cartHandler = new CartHandler($con);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

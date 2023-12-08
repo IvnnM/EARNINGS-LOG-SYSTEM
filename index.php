@@ -2,24 +2,30 @@
 // Start session
 session_start();
 date_default_timezone_set('Asia/Manila');
+$todayDate = date("Y-m-d");
 include 'connection.php';
+
+// Create an instance of the DatabaseHandler class
+$databaseHandler = new DatabaseHandler();
 
 if (isset($_SESSION["user_id"])) {
     $sql = "SELECT username FROM user_table
             WHERE user_id = {$_SESSION["user_id"]}";
 
-    $result = $con->query($sql);
+    $result = $databaseHandler->con->query($sql);
 
     if ($result) {
         $user = $result->fetch_assoc();
     } else {
         // Add this to see if there's an error in your query
-        echo "Query failed: " . $con->error;
+        echo "Query failed: " . $databaseHandler->con->error;
     }
 }
 
+function getRecordCount($table, $condition = "") {
+    global $databaseHandler; // Access the global variable $databaseHandler
+    $con = $databaseHandler->con; // Access the connection property
 
-function getRecordCount($con, $table, $condition = "") {
     $query = "SELECT COUNT(*) AS total_records FROM $table $condition";
     $result = mysqli_query($con, $query);
     if (!$result) {
@@ -29,17 +35,12 @@ function getRecordCount($con, $table, $condition = "") {
     return $row['total_records'];
 }
 
-// Count of products where stock_quantity is less than or equal to 0
-$total_outofstock_products = getRecordCount($con, "products_table", "WHERE stock_quantity <= 0");
-
-// Total count of products in the products_table
-$total_products = getRecordCount($con, "products_table");
-
-// Total transactions for today in the cart_table
-$today = date('Y-m-d');
-$total_today_transactions = getRecordCount($con, "cart_table", "WHERE DATE(timestamp) = '$today'");
-
+// Example usage:
+$total_outofstock_products = getRecordCount("products_table", "WHERE stock_quantity <= 0");
+$total_products = getRecordCount("products_table");
+$total_today_transactions = getRecordCount("cart_table", "WHERE DATE(timestamp) = '$todayDate'");
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -113,43 +114,42 @@ $total_today_transactions = getRecordCount($con, "cart_table", "WHERE DATE(times
               <h2 id="earnings">Earnings Log History</h2>
               <div class="overflow-y-auto p-2 px-3" id="cartList" style="background-color: #cfe2ff; border-radius:8px; height: 77vh;">
                 <?php
-                  include 'connection.php';
+                $databaseHandler = new DatabaseHandler();
 
-                  // Modified SQL query to fetch records from record_sale_table
-                  $sql = "SELECT * FROM record_sale_table";
-                  $result = $con->query($sql);
+                $sql = "SELECT * FROM record_sale_table";
+                $result = $databaseHandler->con->query($sql);
 
-                  if ($result->num_rows > 0) {
-                      echo "<table class='table table-primary' id='recordSaleTable'>";
-                      echo '
-                          <thead>
-                              <tr>
-                                  <th scope="col">Record Sale ID</th>
-                                  <th scope="col">User ID</th>
-                                  <th scope="col">Sale Date</th>
-                                  <th scope="col">Total Items</th>
-                                  <th scope="col">Total Price</th>
-                                  <th scope="col">Timestamp</th>
-                              </tr>
-                          </thead>';
-                      while ($row = $result->fetch_assoc()) {
-                          echo '<tbody class="table-group-divider">';
-                          echo "<tr>";
-                          echo "<td>" . $row["record_sale_id"] . "</td>";
-                          echo "<td>" . $row["user_id"] . "</td>";
-                          echo "<td>" . $row["sale_date"] . "</td>";
-                          echo "<td>" . $row["total_items"] . "</td>";
-                          echo "<td>" . $row["total_price"] . "</td>";
-                          echo "<td>" . $row["timestamp"] . "</td>";
-                          echo '</tbody>';
-                      }
-                      echo "</table>";
-                  } else {
-                      echo "No records found";
-                  }
+                if ($result->num_rows > 0) {
+                    echo "<table class='table table-primary' id='recordSaleTable'>";
+                    echo '
+                        <thead>
+                            <tr>
+                                <th scope="col">Record Sale ID</th>
+                                <th scope="col">User ID</th>
+                                <th scope="col">Sale Date</th>
+                                <th scope="col">Total Items</th>
+                                <th scope="col">Total Price</th>
+                                <th scope="col">Timestamp</th>
+                            </tr>
+                        </thead>';
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<tbody class="table-group-divider">';
+                        echo "<tr>";
+                        echo "<td>" . $row["record_sale_id"] . "</td>";
+                        echo "<td>" . $row["user_id"] . "</td>";
+                        echo "<td>" . $row["sale_date"] . "</td>";
+                        echo "<td>" . $row["total_items"] . "</td>";
+                        echo "<td>" . $row["total_price"] . "</td>";
+                        echo "<td>" . $row["timestamp"] . "</td>";
+                        echo '</tbody>';
+                    }
+                    echo "</table>";
+                } else {
+                    echo "No records found";
+                }
 
-                  $con->close();
-                  ?>
+                $databaseHandler->con->close();
+                ?>
 
               </div>
           </div>
@@ -157,11 +157,10 @@ $total_today_transactions = getRecordCount($con, "cart_table", "WHERE DATE(times
             <h2 id="product">Products</h2>
             <div class="overflow-y-auto p-2 px-3" id="productList" style="background-color: #cfe2ff; border-radius:8px; height: 55vh;">
                 <?php
-                include 'connection.php';
+                $databaseHandler = new DatabaseHandler();
 
-                // Modified SQL query to fetch products from products_table where stock_quantity is less than or equal to 0
                 $sql = "SELECT * FROM products_table";
-                $result = $con->query($sql);
+                $result = $databaseHandler->con->query($sql);
 
                 if ($result->num_rows > 0) {
                     echo "<table class='table table-primary' id='productTable'>";
@@ -188,7 +187,7 @@ $total_today_transactions = getRecordCount($con, "cart_table", "WHERE DATE(times
                     echo "No records found";
                 }
 
-                $con->close();
+                $databaseHandler->con->close();
                 ?>
             </div>
           </div>
@@ -198,11 +197,10 @@ $total_today_transactions = getRecordCount($con, "cart_table", "WHERE DATE(times
 
                 <!-- Product list will be displayed here -->
                 <?php
-                include 'connection.php';
+                $databaseHandler = new DatabaseHandler();
 
-                // Modified SQL query to fetch products with stock_quantity <= 0
                 $sql = "SELECT * FROM products_table WHERE stock_quantity <= 0";
-                $result = $con->query($sql);
+                $result = $databaseHandler->con->query($sql);
 
                 if ($result->num_rows > 0) {
                     echo "<table class='table table-primary' id='productTable'>";
@@ -229,7 +227,7 @@ $total_today_transactions = getRecordCount($con, "cart_table", "WHERE DATE(times
                     echo "No records found";
                 }
 
-                $con->close();
+                $databaseHandler->con->close();
                 ?>
             </div>
 
@@ -238,47 +236,58 @@ $total_today_transactions = getRecordCount($con, "cart_table", "WHERE DATE(times
               <h2 id="soldItems">Sold Items</h2>
               <div class="overflow-y-auto p-2 px-3" id="cartList" style="background-color: #cfe2ff; border-radius:8px; height: 55vh;">
 
-                  <!-- Cart list will be displayed here -->
-                  <?php
-                  include 'connection.php';
+                <!-- Cart list will be displayed here -->
+                <?php
+                // Create an instance of the DatabaseHandler class
+                $databaseHandler = new DatabaseHandler();
 
-                  // Modified SQL query to fetch transactions from cart_table for today
-                  $today = date('Y-m-d');
-                  $cartSql = "SELECT cart_table.id, cart_table.product_id, products_table.product_name, cart_table.unit_price, cart_table.quantity, DATE(cart_table.timestamp) AS date 
-                  FROM cart_table
-                  INNER JOIN products_table ON cart_table.product_id = products_table.product_id
-                  WHERE DATE(cart_table.timestamp) = '$today'";
-                  $cartResult = $con->query($cartSql);
+                date_default_timezone_set('Asia/Manila');
+                // Initialize $todayDate with the current date as a default
+                $todayDate = date("Y-m-d");
 
-                  if ($cartResult->num_rows > 0) {
-                      echo "<table class='table table-primary' id='cartTable'>";
-                      echo '
-                          <thead>
-                              <tr>
-                                  <th scope="col">ID</th>
-                                  <th scope="col">Product Name</th>
-                                  <th scope="col">Unit Price</th>
-                                  <th scope="col">Quantity</th>
-                                  <th scope="col">Date</th>
-                              </tr>
-                          </thead>';
-                      while ($cartRow = $cartResult->fetch_assoc()) {
-                          echo '<tbody class="table-group-divider">';
-                          echo "<tr>";
-                          echo "<td>" . $cartRow["id"] . "</td>";
-                          echo "<td>" . $cartRow["product_name"] . "</td>";
-                          echo "<td>" . $cartRow["unit_price"] . "</td>";
-                          echo "<td>" . $cartRow["quantity"] . "</td>";
-                          echo "<td>" . $cartRow["date"] . "</td>";
-                          echo '</tbody>';
-                      }
-                      echo "</table>";
-                  } else {
-                      echo "No records found";
-                  }
+                // Check if a date is provided by the user
+                if (isset($_GET['selectedDate'])) {
+                    // Use the provided date if available and convert it to the correct format
+                    $selectedDate = $_GET['selectedDate'];
+                    $todayDate = date("Y-m-d", strtotime($selectedDate));
+                }
 
-                  $con->close();
-                  ?>
+                // Modify your SQL query to filter records based on the selected date
+                $sql = "SELECT cart_table.id, products_table.product_name, cart_table.unit_price, cart_table.quantity, cart_table.timestamp
+                FROM cart_table
+                INNER JOIN products_table ON cart_table.product_id = products_table.product_id
+                WHERE DATE(cart_table.timestamp) = '$todayDate'";
+
+                $result = $databaseHandler->con->query($sql);
+
+                if ($result->num_rows > 0) {
+                    echo "<table class='table table table-primary overflow-y-auto' id='cartTable'>";
+                    echo '
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Unit Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Date</th>
+                            </tr>
+                        </thead>';
+                    echo '<tbody class="table-group-divider">'; // You may not need to create a new tbody for each row
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . $row["id"] . "</td>";
+                        echo "<td>" . $row["product_name"] . "</td>"; 
+                        echo "<td>" . $row["unit_price"] . "</td>";
+                        echo "<td>" . $row["quantity"] . "</td>";
+                        echo "<td>" . $row["timestamp"] . "</td>";
+                        echo '</tr>';
+                    }
+                    echo "</tbody>";
+                    echo "</table>";
+                } else {
+                    echo "<br>No records found for the selected date";
+                }
+                ?>
               </div>
           </div>
           

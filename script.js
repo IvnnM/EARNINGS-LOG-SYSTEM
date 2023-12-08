@@ -305,7 +305,6 @@ function executeCartAction(action, data) {
 }
 /////////////////////////////////////////
 // Function to handle the submit cart action
-// Function to handle the submit cart action
 function handleSubmitCart() {
     // Get the selected date from the input field
     const selectedDate = document.getElementById('selectedDate').value;

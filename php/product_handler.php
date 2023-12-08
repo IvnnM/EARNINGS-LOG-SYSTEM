@@ -1,33 +1,19 @@
 <?php
 // CRUD for Product Handling
-
-class DatabaseHandler
-{
-    protected $con;
-
-    public function __construct($db)
-    {
-        $this->con = $db;
-
-        // Check connection
-        if ($this->con->connect_error) {
-            die("Connection failed: " . $this->con->connect_error);
-        }
-    }
-
-    public function closeConnection()
-    {
-        $this->con->close();
-    }
-}
+include_once __DIR__ . '/../connection.php'; 
+include_once __DIR__ . '/get_products.php';
 
 class ProductHandler extends DatabaseHandler
 {
     // Inheritance: ProductHandler inherits from DatabaseHandler
 
     // Abstraction: Method to add a product
-    public function addProduct($productName, $unitPrice, $stockQuantity)
+    public function addProduct(Product $product)
     {
+        $productName = $product->getProductName();
+        $unitPrice = $product->getUnitPrice();
+        $stockQuantity = $product->getStockQuantity();
+
         $checkQuery = "SELECT * FROM products_table WHERE product_name = '$productName'";
         $checkResult = $this->con->query($checkQuery);
 
@@ -69,8 +55,9 @@ class ProductHandler extends DatabaseHandler
     }
 
     // Abstraction: Method to add stock
-    public function addStock($productId, $quantity)
+    public function addStock(Product $product, $quantity)
     {
+        $productId = $product->getProductId();
         $result = $this->con->query("SELECT stock_quantity FROM products_table WHERE product_id = $productId");
 
         if ($result->num_rows > 0) {
@@ -84,6 +71,13 @@ class ProductHandler extends DatabaseHandler
         } else {
             return 'error';
         }
+    }
+
+
+    // Method to close the database connection
+    public function closeConnection()
+    {
+        $this->con->close();
     }
 }
 ?>

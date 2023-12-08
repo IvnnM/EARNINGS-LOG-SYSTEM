@@ -1,29 +1,9 @@
 <?php
 
-include '../connection.php';
+include_once __DIR__ . '/../connection.php';
 
-class DatabaseHandler
-{
-    protected $con;
+class LoginHandler extends DatabaseHandler {
 
-    public function __construct($db)
-    {
-        $this->con = $db;
-
-        // Check connection
-        if ($this->con->connect_error) {
-            die("Connection failed: " . $this->con->connect_error);
-        }
-    }
-
-    public function closeConnection()
-    {
-        $this->con->close();
-    }
-}
-
-class LoginHandler extends DatabaseHandler
-{
     // Inheritance: LoginHandler inherits from DatabaseHandler
 
     // Abstraction: Method to authenticate user
@@ -66,7 +46,7 @@ class LoginHandler extends DatabaseHandler
 }
 
 // Instantiate LoginHandler
-$loginHandler = new LoginHandler($con);
+$loginHandler = new LoginHandler();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
@@ -77,7 +57,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
     echo "Invalid request method";
 }
-
-// Close the database connection
-$loginHandler->closeConnection();
-?>
