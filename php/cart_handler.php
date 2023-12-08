@@ -1,14 +1,18 @@
 <?php
+// Include the connection.php file
 include_once __DIR__ . '/../connection.php';
 
+// CartHandler class extends DatabaseHandler class
 class CartHandler extends DatabaseHandler
 {
     // Abstraction: Method to add sold items to the cart
     public function addSoldItems($data)
     {
+        // Encapsulation: Accessing data through the object and not directly
         $productId = $data->product_id;
         $quantity = $data->quantity;
 
+        // Fetch stock quantity from products_table
         $checkStockQuery = "SELECT stock_quantity FROM products_table WHERE product_id = $productId";
         $checkStockResult = $this->con->query($checkStockQuery);
 
@@ -16,10 +20,13 @@ class CartHandler extends DatabaseHandler
             $row = $checkStockResult->fetch_assoc();
             $stockQuantity = $row['stock_quantity'];
 
+            // Encapsulation: Modifying stock quantity through the object
             if ($stockQuantity >= $quantity) {
+                // Update stock quantity in products_table
                 $updateProductsQuery = "UPDATE products_table SET stock_quantity = stock_quantity - $quantity WHERE product_id = $productId";
                 $this->con->query($updateProductsQuery);
 
+                // Insert sold items into cart_table
                 $insertCartQuery = "INSERT INTO cart_table (product_id, unit_price, quantity, timestamp) 
                                     VALUES ($productId, $data->unit_price, $quantity, NOW())";
                 $this->con->query($insertCartQuery);
@@ -38,6 +45,7 @@ class CartHandler extends DatabaseHandler
     {
         $productId = $data->product_id;
 
+        // Fetch the latest item from cart_table for the specified product
         $fetchLatestCartItemQuery = "SELECT id, quantity FROM cart_table WHERE product_id = $productId ORDER BY timestamp DESC LIMIT 1";
         $fetchLatestCartItemResult = $this->con->query($fetchLatestCartItemQuery);
 
@@ -46,9 +54,11 @@ class CartHandler extends DatabaseHandler
             $latestCartItemId = $row['id'];
             $quantityToDelete = $row['quantity'];
 
+            // Update stock quantity in products_table
             $updateProductsQuery = "UPDATE products_table SET stock_quantity = stock_quantity + $quantityToDelete WHERE product_id = $productId";
             $this->con->query($updateProductsQuery);
 
+            // Delete the latest item from cart_table
             $deleteCartQuery = "DELETE FROM cart_table WHERE id = $latestCartItemId";
             $this->con->query($deleteCartQuery);
 
@@ -57,8 +67,8 @@ class CartHandler extends DatabaseHandler
             return "No item found in cart";
         }
     }
-    
-    // Method to close the database connection
+
+    // Encapsulation: Method to close the database connection
     public function closeConnection()
     {
         $this->con->close();
@@ -72,18 +82,22 @@ session_start();
 global $con;
 $cartHandler = new CartHandler($con);
 
+// Handle the POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = json_decode(file_get_contents("php://input"));
 
     if (isset($data->action)) {
         $action = $data->action;
 
+        // Switch statement for different actions
         switch ($action) {
             case "addSoldItems":
+                // Call the addSoldItems method
                 echo $cartHandler->addSoldItems($data);
                 break;
 
             case "deleteSoldItems":
+                // Call the deleteSoldItems method
                 echo $cartHandler->deleteSoldItems($data);
                 break;
 

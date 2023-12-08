@@ -1,8 +1,13 @@
 <?php
+// sale_handler.php
+
+// Inclusion of database connection file
 include_once __DIR__ . '/../connection.php';
 
+// Inheritance: SaleHandler inherits from DatabaseHandler
 class SaleHandler extends DatabaseHandler
 {
+    // Abstraction: Method to process a sale for a given date and user
     public function processSale($selectedDate, $userId)
     {
         // Fetch cart items for the selected date
@@ -63,6 +68,7 @@ class SaleHandler extends DatabaseHandler
         }
     }
 
+    // Abstraction: Method to close the database connection
     public function closeConnection()
     {
         $this->con->close();
@@ -76,11 +82,15 @@ session_start();
 global $con; // Assuming $con is your database connection
 $saleHandler = new SaleHandler($con);
 
+// Check if the request method is GET and 'selectedDate' is set in the parameters
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['selectedDate'])) {
+    // Get the user ID from the session or set it to null
     $userId = $_SESSION['user_id'] ?? null;
     $selectedDate = $_GET['selectedDate'];
 
+    // Check if the user ID is not null
     if ($userId !== null) {
+        // Call the processSale method with the selected date and user ID
         $result = $saleHandler->processSale($selectedDate, $userId);
         echo $result;
     } else {

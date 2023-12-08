@@ -1,5 +1,6 @@
 <?php
 // Product Handling process
+
 // Start the session
 session_start();
 
@@ -16,7 +17,6 @@ include_once 'product_handler.php';
 global $con;
 $productHandler = new ProductHandler($con);
 
-
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = json_decode(file_get_contents("php://input"));
@@ -24,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($data->action)) {
         $action = $data->action;
 
+        // Handle different actions using a switch statement
         switch ($action) {
             case "addProduct":
                 handleAction($productHandler, 'addProduct', $data);
@@ -56,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 function handleAction($handler, $action, $data) {
     $result = "";
 
+    // Use polymorphism to call the specific handler function based on the action
     switch ($action) {
         case 'addProduct':
             $result = handleAddProduct($handler, $data);
@@ -97,7 +99,6 @@ function handleAddProduct($handler, $data) {
         return "Incomplete data for adding a product";
     }
 }
-
 
 // Function to handle the "updateProduct" action
 function handleUpdateProduct($handler, $data) {
@@ -141,7 +142,6 @@ function handleAddStock($handler, $data) {
         return "Incomplete data for adding stock";
     }
 }
-
 
 // Close the database connection
 $productHandler->closeConnection();

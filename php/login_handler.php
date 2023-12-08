@@ -1,7 +1,9 @@
 <?php
 
+// Include the DatabaseHandler class for inheritance
 include_once __DIR__ . '/../connection.php';
 
+// LoginHandler class inherits from DatabaseHandler class
 class LoginHandler extends DatabaseHandler {
 
     // Inheritance: LoginHandler inherits from DatabaseHandler
@@ -23,7 +25,7 @@ class LoginHandler extends DatabaseHandler {
             $row = $result->fetch_assoc();
             $storedPasswordHash = $row['password'];
 
-            // Verify password
+            // Verify password using PHP's password_verify function
             if (password_verify($password, $storedPasswordHash)) {
                 // Password is correct
 
@@ -48,6 +50,7 @@ class LoginHandler extends DatabaseHandler {
 // Instantiate LoginHandler
 $loginHandler = new LoginHandler();
 
+// Check if the request method is POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -55,5 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Use the authenticateUser method
     echo $loginHandler->authenticateUser($username, $password);
 } else {
+    // If the request method is not POST, return an error message
     echo "Invalid request method";
 }
+
+?>
