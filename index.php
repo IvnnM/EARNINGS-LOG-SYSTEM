@@ -116,7 +116,7 @@ $total_today_transactions = getRecordCount("cart_table", "WHERE DATE(timestamp) 
                 <?php
                 $databaseHandler = new DatabaseHandler();
 
-                $sql = "SELECT * FROM record_sale_table";
+                $sql = "SELECT * FROM record_sale_table ORDER BY record_sale_id DESC";
                 $result = $databaseHandler->con->query($sql);
 
                 if ($result->num_rows > 0) {
